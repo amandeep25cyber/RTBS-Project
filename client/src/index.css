@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+@theme {
+  --color-base-dark: #0f172a; /* slate-900 */
+  --color-base-darker: #020617; /* slate-950 */
+  --color-base-panel: #1e293b; /* slate-800 */
+  
+  --color-accent: #3b82f6; /* blue-500 */
+  --color-accent-hover: #2563eb; /* blue-600 */
+  
+  --color-status-amber: #f59e0b;
+  --color-status-red: #ef4444;
+  --color-status-green: #10b981;
+
+  --font-sans: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "Courier New", Courier, monospace;
+}
+
+body {
+  @apply bg-[#020617] text-slate-200 font-sans;
+}
+
+.mono-num {
+  @apply font-mono tabular-nums tracking-tight;
+}
