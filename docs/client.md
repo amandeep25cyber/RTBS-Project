@@ -170,7 +170,59 @@ Publisher analytics pages.
 /profile
 ```
 
-## 8. Explicitly out of scope for this build
+## 9. Polish & quality upgrades (phase 2)
+
+These are not required for the app to function, but are what take it from "working" to
+"impressive." Build them only after all 25 steps in §6 are done and stable, in the order
+given in agent.md, since a few of these (TypeScript) touch every existing file and are
+easiest to do in one clean pass rather than repeatedly.
+
+### 9.1 Real-time feel
+- New rows on the Live Auction Feed animate in (slide/fade), with a brief highlight flash
+  that fades over ~1s, instead of appearing instantly.
+- Live numbers (QPS counter, spend totals) animate their count change rather than jumping
+  straight to the new value.
+- A small pulsing "Live" indicator dot next to the feed header.
+
+### 9.2 Data visualization upgrades
+- Latency should be shown as a distribution (separate p50/p95/p99 bars), not a single
+  average number.
+- Budget pacing gets an area chart with two lines: a dashed "ideal pacing" line and a
+  solid "actual spend" line, so over/under-spend is visible at a glance.
+
+### 9.3 Loading & empty states
+- Replace plain "Loading..." text everywhere with skeleton loaders shaped like the content
+  that's about to appear.
+- Empty states (e.g. an advertiser with zero campaigns) include a short helpful message
+  and a direct action button (e.g. "Create your first campaign"), not just "No data."
+
+### 9.4 Toast notifications
+- A toast/snackbar system for feedback on every create/edit/delete action (campaigns,
+  slots, profile changes, user block/unblock) — success and error variants.
+
+### 9.5 Theme toggle
+- Dark theme (per §4) stays the default; add a toggle in the top bar for a light variant
+  using the same design tokens.
+
+### 9.6 Accessibility & keyboard support
+- All forms have proper `<label>` associations and are fully usable via keyboard/Tab.
+- The Live Auction Feed uses an `aria-live` region so new entries are announced to screen
+  readers, not just visually inserted.
+
+### 9.7 TypeScript conversion
+- Convert the whole codebase from JS/JSX to TS/TSX. Define types for every mock data shape
+  in §5 (User, Campaign, Slot, Dsp, AuctionEvent) and type every service function's
+  parameters and return values, and every component's props.
+
+### 9.8 Route-based code splitting
+- Lazy-load each role's route group (Admin / Advertiser / Publisher) so a logged-in
+  advertiser's browser never downloads the Admin bundle, and vice versa.
+
+### 9.9 Command palette
+- A Cmd/Ctrl+K palette that lets any role jump directly to their own pages by typing,
+  instead of only navigating via the sidebar.
+
+## 10. Explicitly out of scope for this build
 
 No real backend, no real auth/JWT/cookies, no real database, no payment integration.
 These come in a later phase once this frontend is approved.

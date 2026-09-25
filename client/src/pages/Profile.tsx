@@ -33,7 +33,7 @@ export default function Profile() {
     setIsSubmitting(true);
     try {
       // Mock updating profile
-      const updates = { name: formData.name, email: formData.email };
+      const updates: any = { name: formData.name, email: formData.email };
       if (formData.newPassword) {
         updates.password = formData.newPassword;
       }

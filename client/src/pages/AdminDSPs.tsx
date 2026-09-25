@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { dspService } from '../services/dspService';
-import { Server, Activity, ArrowUpRight, BarChart2 } from 'lucide-react';
+import { Server, Activity, BarChart2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from 'recharts';
 
 export default function AdminDSPs() {
@@ -66,7 +66,7 @@ export default function AdminDSPs() {
                   itemStyle={{ color: '#3b82f6' }}
                 />
                 <Bar dataKey="winRate" radius={[4, 4, 0, 0]}>
-                  {chartData.map((entry, index) => (
+                  {chartData.map((index) => (
                     <Cell key={`cell-${index}`} fill="var(--color-accent)" />
                   ))}
                 </Bar>
@@ -93,7 +93,7 @@ export default function AdminDSPs() {
                   itemStyle={{ color: '#f59e0b' }}
                 />
                 <Bar dataKey="latency" radius={[4, 4, 0, 0]}>
-                  {chartData.map((entry, index) => (
+                  {chartData.map((index) => (
                     <Cell key={`cell-${index}`} fill="var(--color-status-amber)" />
                   ))}
                 </Bar>
@@ -122,7 +122,7 @@ export default function AdminDSPs() {
             <tbody className="divide-y divide-slate-700/50">
               {dsps.length === 0 ? (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
                     No DSPs found.
                   </td>
                 </tr>

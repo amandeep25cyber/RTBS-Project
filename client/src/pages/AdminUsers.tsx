@@ -70,7 +70,7 @@ export default function AdminUsers() {
             <tbody className="divide-y divide-slate-700/50">
               {users.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
+                  <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
                     No users found.
                   </td>
                 </tr>

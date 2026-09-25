@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import {  createContext, useContext, useState } from 'react';
 
-const SimulatorContext = createContext();
+const SimulatorContext = createContext<any>(null);
 
 export function SimulatorProvider({ children }) {
   // default to 10 QPS (100ms interval)

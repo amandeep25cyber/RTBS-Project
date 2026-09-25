@@ -7,11 +7,11 @@ export const analyticsService = {
     await delay(500);
     return analytics.platform;
   },
-  getAdvertiserAnalytics: async (advertiserId) => {
+  getAdvertiserAnalytics: async (_advertiserId) => {
     await delay(400);
     return analytics.advertiser;
   },
-  getPublisherAnalytics: async (publisherId) => {
+  getPublisherAnalytics: async (_publisherId) => {
     await delay(400);
     return analytics.publisher;
   }

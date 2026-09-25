@@ -11,7 +11,7 @@ export const userService = {
     await delay(300);
     const user = users.find(u => u.id === userId);
     if (user) {
-      user.blocked = blocked;
+      (user as any).blocked = blocked;
     }
     return user;
   },

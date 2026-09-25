@@ -88,3 +88,37 @@ ground rules to follow while doing it.
     `src/services/` function (never a direct mock import), so that later swapping each
     service function's body for a real `fetch` call is the only change needed to connect
     the real backend.
+
+## Phase 2 — Polish (only start after step 25 is stable and pushed)
+
+Each step below maps to the matching subsection in client.md §9. Do them in this order —
+TypeScript is placed first in this phase specifically so every step after it is written
+in TS/TSX from the start, instead of being converted twice.
+
+26. Convert the entire codebase from JS/JSX to TS/TSX (client.md §9.7): add types for
+    every mock data shape (User, Campaign, Slot, Dsp, AuctionEvent) and type every service
+    function's parameters/return values and every component's props. Do this in one full
+    pass across all existing files, then commit and push before continuing.
+27. Add the real-time feel enhancements to the Live Auction Feed (client.md §9.1):
+    slide/fade-in with a fading highlight flash for new rows, animated count-up for live
+    numbers (QPS, spend), and a pulsing "Live" indicator.
+28. Upgrade the analytics charts (client.md §9.2): split latency into p50/p95/p99 bars
+    instead of one average, and add the budget pacing area chart with an "ideal" dashed
+    line against the "actual" solid line.
+29. Replace loading text with skeleton loaders and upgrade empty states to include a
+    helpful message plus a direct action button, across every page (client.md §9.3).
+30. Build a toast/snackbar notification system and wire it into every create/edit/delete
+    action across Campaign Management, Slot Management, Profile, and User Management
+    (client.md §9.4), with distinct success and error styles.
+31. Add a light/dark theme toggle in the top bar, dark as the default, reusing the design
+    tokens from client.md §4 (client.md §9.5).
+32. Do an accessibility pass: label every form field properly, verify full keyboard
+    navigation end to end, and add an `aria-live` region to the Live Auction Feed
+    (client.md §9.6).
+33. Add route-based code splitting so each role's route group (Admin / Advertiser /
+    Publisher) lazy-loads independently (client.md §9.8).
+34. Add a Cmd/Ctrl+K command palette for jumping directly to any of the current role's
+    pages (client.md §9.9).
+
+Push each of these steps to GitHub individually, same as phase 1, using the
+`Step N: <short description>` commit message format from Ground rule 6.

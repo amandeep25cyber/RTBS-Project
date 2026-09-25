@@ -103,7 +103,7 @@ export default function PubSlots() {
             <tbody className="divide-y divide-slate-700/50">
               {slots.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="px-6 py-12 text-center">
+                  <td colSpan={5} className="px-6 py-12 text-center">
                     <Layers className="w-12 h-12 text-slate-600 mx-auto mb-3" />
                     <p className="text-slate-400">You haven't created any ad slots yet.</p>
                   </td>

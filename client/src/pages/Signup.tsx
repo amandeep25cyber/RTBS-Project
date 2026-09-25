@@ -5,11 +5,11 @@ import { useAuth } from '../context/AuthContext';
 
 export default function Signup() {
   const [step, setStep] = useState(1);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<any>({});
   const { signup, isLoading } = useAuth();
   const navigate = useNavigate();
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<any>({
     role: '',
     name: '',
     email: '',
@@ -30,7 +30,7 @@ export default function Signup() {
   const prevStep = () => setStep(s => s - 1);
 
   const validateStep2 = () => {
-    const newErrors = {};
+    const newErrors: any = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!emailRegex.test(formData.email)) newErrors.email = 'Valid email is required';
@@ -41,7 +41,7 @@ export default function Signup() {
   };
 
   const handleSubmit = async () => {
-    const newErrors = {};
+    const newErrors: any = {};
     if (formData.role === 'advertiser') {
       if (!formData.companyName.trim()) newErrors.companyName = 'Company Name is required';
     } else {
