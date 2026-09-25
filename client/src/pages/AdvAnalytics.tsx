@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { analyticsService } from '../services/analyticsService';
 import { BarChart3 } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
 export default function AdvAnalytics() {
   const { currentUser } = useAuth();
@@ -51,7 +51,7 @@ export default function AdvAnalytics() {
           <h2 className="text-lg font-medium text-slate-200 mb-6">Spend Over Time</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data.spendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <ComposedChart data={data.spendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorSpendAdv" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
@@ -64,10 +64,11 @@ export default function AdvAnalytics() {
                 <RechartsTooltip 
                   contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', borderRadius: '0.5rem', color: '#f8fafc' }}
                   itemStyle={{ color: '#10b981' }}
-                  formatter={(value) => [`$${value}`, 'Spend']}
+                  formatter={(value, name) => [`$${value}`, name === 'spend' ? 'Actual Spend' : 'Ideal Pacing']}
                 />
-                <Area type="monotone" dataKey="spend" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorSpendAdv)" />
-              </AreaChart>
+                <Area type="monotone" dataKey="spend" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorSpendAdv)" name="spend" />
+                <Line type="monotone" dataKey="idealSpend" stroke="#94a3b8" strokeWidth={2} strokeDasharray="5 5" dot={false} name="idealSpend" />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
         </div>

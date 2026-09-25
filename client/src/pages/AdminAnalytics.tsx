@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { analyticsService } from '../services/analyticsService';
 import { BarChart3, TrendingUp, Clock, Target } from 'lucide-react';
-import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, ComposedChart, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
 export default function AdminAnalytics() {
   const [data, setData] = useState(null);
@@ -91,7 +91,7 @@ export default function AdminAnalytics() {
           <h2 className="text-lg font-medium text-slate-200 mb-6">Total Spend (24h)</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data.spendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <ComposedChart data={data.spendData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorSpend" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
@@ -104,10 +104,11 @@ export default function AdminAnalytics() {
                 <RechartsTooltip 
                   contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', borderRadius: '0.5rem', color: '#f8fafc' }}
                   itemStyle={{ color: '#10b981' }}
-                  formatter={(value) => [`$${value}`, 'Spend']}
+                  formatter={(value, name) => [`$${value}`, name === 'spend' ? 'Actual Spend' : 'Ideal Pacing']}
                 />
-                <Area type="monotone" dataKey="spend" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorSpend)" />
-              </AreaChart>
+                <Area type="monotone" dataKey="spend" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorSpend)" name="spend" />
+                <Line type="monotone" dataKey="idealSpend" stroke="#94a3b8" strokeWidth={2} strokeDasharray="5 5" dot={false} name="idealSpend" />
+              </ComposedChart>
             </ResponsiveContainer>
           </div>
         </div>
@@ -117,17 +118,18 @@ export default function AdminAnalytics() {
           <h2 className="text-lg font-medium text-slate-200 mb-6">Latency Percentiles (ms)</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data.latencyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <BarChart data={data.latencyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
                 <XAxis dataKey="hour" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} tickLine={false} axisLine={false} />
                 <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} tickLine={false} axisLine={false} />
                 <RechartsTooltip 
                   contentStyle={{ backgroundColor: '#1e293b', borderColor: '#334155', borderRadius: '0.5rem', color: '#f8fafc' }}
+                  cursor={{ fill: '#334155', opacity: 0.2 }}
                 />
-                <Line type="monotone" dataKey="p50" stroke="#3b82f6" strokeWidth={2} dot={false} name="p50" />
-                <Line type="monotone" dataKey="p95" stroke="#f59e0b" strokeWidth={2} dot={false} name="p95" />
-                <Line type="monotone" dataKey="p99" stroke="#ef4444" strokeWidth={2} dot={false} name="p99" />
-              </LineChart>
+                <Bar dataKey="p50" fill="#3b82f6" name="p50" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="p95" fill="#f59e0b" name="p95" radius={[2, 2, 0, 0]} />
+                <Bar dataKey="p99" fill="#ef4444" name="p99" radius={[2, 2, 0, 0]} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>

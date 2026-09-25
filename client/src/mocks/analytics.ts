@@ -3,7 +3,8 @@ export const analytics = {
   platform: {
     spendData: Array.from({ length: 24 }).map((_, i) => ({
       hour: `${i}:00`,
-      spend: Math.floor(Math.random() * 1000) + 500
+      spend: Math.floor(Math.random() * 1000) + 500,
+      idealSpend: 800
     })),
     latencyData: Array.from({ length: 24 }).map((_, i) => ({
       hour: `${i}:00`,
@@ -19,7 +20,8 @@ export const analytics = {
   advertiser: {
     spendData: Array.from({ length: 24 }).map((_, i) => ({
       hour: `${i}:00`,
-      spend: Math.floor(Math.random() * 200) + 50
+      spend: Math.floor(Math.random() * 200) + 50,
+      idealSpend: 150
     })),
     winRateData: Array.from({ length: 24 }).map((_, i) => ({
       hour: `${i}:00`,
