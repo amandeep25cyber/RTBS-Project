@@ -1,23 +1,39 @@
 @import "tailwindcss";
 
 @theme {
-  --color-base-dark: #0f172a; /* slate-900 */
-  --color-base-darker: #020617; /* slate-950 */
-  --color-base-panel: #1e293b; /* slate-800 */
+  /* Premium Light Mode Palette Mapping */
+  --color-base-dark: #e2e8f0; 
+  --color-base-darker: #f8fafc; /* Very light background */
+  --color-base-panel: #ffffff; /* White panels */
   
-  --color-accent: #3b82f6; /* blue-500 */
-  --color-accent-hover: #2563eb; /* blue-600 */
+  /* Accent colors - Premium Indigo */
+  --color-accent: #4f46e5; /* indigo-600 */
+  --color-accent-hover: #4338ca; /* indigo-700 */
   
-  --color-status-amber: #f59e0b;
-  --color-status-red: #ef4444;
-  --color-status-green: #10b981;
+  /* Status colors */
+  --color-status-amber: #d97706; /* darker amber */
+  --color-status-red: #dc2626; /* darker red */
+  --color-status-green: #059669; /* darker green */
+
+  /* Invert Slate scale for light mode */
+  --color-slate-50: #020617;
+  --color-slate-100: #0f172a; /* Was light, now very dark (headings) */
+  --color-slate-200: #1e293b; /* Primary text */
+  --color-slate-300: #334155; 
+  --color-slate-400: #475569; /* Secondary text */
+  --color-slate-500: #64748b; /* Muted */
+  --color-slate-600: #94a3b8; 
+  --color-slate-700: #e2e8f0; /* Borders */
+  --color-slate-800: #f1f5f9; /* Subtle backgrounds / hovers */
+  --color-slate-900: #ffffff; /* Inputs / inner cards */
+  --color-slate-950: #ffffff; 
 
   --font-sans: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: "JetBrains Mono", "Courier New", Courier, monospace;
 }
 
 body {
-  @apply bg-[#020617] text-slate-200 font-sans;
+  @apply bg-base-darker text-slate-200 font-sans;
 }
 
 .mono-num {
