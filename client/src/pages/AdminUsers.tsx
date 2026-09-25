@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { userService } from '../services/userService';
 import { Users, Shield, ShieldOff, Mail, Briefcase, Globe, AlertCircle } from 'lucide-react';
 import { SkeletonTable } from '../components/Skeleton';
+import { toast } from 'react-hot-toast';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -25,8 +26,10 @@ export default function AdminUsers() {
     try {
       const updatedUser = await userService.updateUserStatus(userId, !currentStatus);
       setUsers(prev => prev.map(u => (u.id === userId ? updatedUser : u)));
+      toast.success(updatedUser.blocked ? 'User blocked' : 'User unblocked');
     } catch (err) {
       console.error("Failed to update user status", err);
+      toast.error('Failed to update user status');
     }
   };
 

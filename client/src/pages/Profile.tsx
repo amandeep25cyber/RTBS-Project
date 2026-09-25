@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { userService } from '../services/userService';
+import { toast } from 'react-hot-toast';
 import { User, Mail, Shield, Save, LogOut, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -40,11 +41,13 @@ export default function Profile() {
       
       await userService.updateProfile(currentUser.id, updates);
       
+      toast.success('Profile updated successfully');
       setMessage({ type: 'success', text: 'Profile updated successfully' });
       setFormData(prev => ({ ...prev, currentPassword: '', newPassword: '', confirmPassword: '' }));
       
       // Update context in real app, but for mock we just show success
     } catch (err) {
+      toast.error('Failed to update profile');
       setMessage({ type: 'error', text: 'Failed to update profile' });
     } finally {
       setIsSubmitting(false);

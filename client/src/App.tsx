@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import { Toaster } from 'react-hot-toast';
 import Layout from './components/Layout';
 
 // Pages
@@ -71,6 +72,19 @@ function AppRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
+      <Toaster position="top-right" toastOptions={{
+        style: {
+          background: '#1e293b',
+          color: '#f8fafc',
+          border: '1px solid #334155'
+        },
+        success: {
+          iconTheme: {
+            primary: '#10b981',
+            secondary: '#1e293b',
+          },
+        },
+      }} />
       <AppRoutes />
     </BrowserRouter>
   );

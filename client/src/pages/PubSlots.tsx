@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { slotService } from '../services/slotService';
 import { Layers, Plus, X, Save } from 'lucide-react';
 import { SkeletonTable } from '../components/Skeleton';
+import { toast } from 'react-hot-toast';
 
 export default function PubSlots() {
   const { currentUser } = useAuth();
@@ -50,8 +51,10 @@ export default function PubSlots() {
       setSlots(prev => [...prev, newSlot]);
       setIsModalOpen(false);
       setFormData({ slotName: '', floorPrice: '' });
+      toast.success('Ad slot created successfully!');
     } catch (err) {
       console.error("Failed to create slot", err);
+      toast.error('Failed to create ad slot. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

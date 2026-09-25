@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { campaignService } from '../services/campaignService';
 import { Megaphone, Plus, X, Save } from 'lucide-react';
 import { SkeletonCard } from '../components/Skeleton';
+import { toast } from 'react-hot-toast';
 
 export default function AdvCampaigns() {
   const { currentUser } = useAuth();
@@ -56,8 +57,10 @@ export default function AdvCampaigns() {
       setCampaigns(prev => [...prev, newCampaign]);
       setIsModalOpen(false);
       setFormData({ name: '', dailyBudget: '', maxBid: '', geo: 'IN', device: 'all', frequencyCap: '5' });
+      toast.success('Campaign created successfully!');
     } catch (err) {
       console.error("Failed to create campaign", err);
+      toast.error('Failed to create campaign. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

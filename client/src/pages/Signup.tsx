@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Megaphone, Layers, ChevronRight, ChevronLeft, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
 export default function Signup() {
@@ -56,9 +57,11 @@ export default function Signup() {
 
     try {
       const user = await signup(formData);
+      toast.success('Account created successfully!');
       if (user.role === 'advertiser') navigate('/advertiser/dashboard');
       else if (user.role === 'publisher') navigate('/publisher/dashboard');
     } catch (err) {
+      toast.error(err.message || 'Signup failed');
       setErrors({ submit: err.message || 'Signup failed' });
     }
   };

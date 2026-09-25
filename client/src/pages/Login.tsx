@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-hot-toast';
 import { LogIn, AlertCircle } from 'lucide-react';
 
 export default function Login() {
@@ -15,10 +16,12 @@ export default function Login() {
 
     try {
       const user = await login(email, password);
+      toast.success('Successfully signed in');
       if (user.role === 'admin') navigate('/admin/feed');
       else if (user.role === 'advertiser') navigate('/advertiser/dashboard');
       else if (user.role === 'publisher') navigate('/publisher/dashboard');
     } catch (err) {
+      toast.error('Invalid email or password');
       // Error is handled by context and displayed below
     }
   };
