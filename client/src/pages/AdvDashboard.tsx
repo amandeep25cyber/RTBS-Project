@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { campaignService } from '../services/campaignService';
 import { analyticsService } from '../services/analyticsService';
+import { Link } from 'react-router-dom';
+import { SkeletonCard } from '../components/Skeleton';
 import { LayoutDashboard, Megaphone, DollarSign, Target } from 'lucide-react';
 
 export default function AdvDashboard() {
@@ -32,10 +34,17 @@ export default function AdvDashboard() {
 
   if (isLoading || !analytics) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-slate-400">
-          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-          <p>Loading your dashboard...</p>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
+            <LayoutDashboard className="text-accent" /> Dashboard
+          </h1>
+          <p className="text-slate-400 mt-1">Overview of your campaigns and performance</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
         </div>
       </div>
     );
@@ -117,9 +126,13 @@ export default function AdvDashboard() {
         </div>
         <div className="p-6">
           {campaigns.length === 0 ? (
-            <div className="text-center py-8">
+            <div className="text-center py-8 flex flex-col items-center">
               <Megaphone className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-              <p className="text-slate-400">You don't have any campaigns yet.</p>
+              <h3 className="text-lg font-medium text-slate-200 mb-2">No active campaigns</h3>
+              <p className="text-slate-400 mb-6">You don't have any campaigns yet. Start running ads to see performance data here.</p>
+              <Link to="/advertiser/campaigns" className="bg-accent hover:bg-accent-hover text-white font-medium py-2 px-6 rounded-lg transition-colors inline-block">
+                Create Campaign
+              </Link>
             </div>
           ) : (
             <div className="space-y-4">

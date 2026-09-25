@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { slotService } from '../services/slotService';
 import { Layers, Plus, X, Save } from 'lucide-react';
+import { SkeletonTable } from '../components/Skeleton';
 
 export default function PubSlots() {
   const { currentUser } = useAuth();
@@ -58,11 +59,19 @@ export default function PubSlots() {
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-slate-400">
-          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-          <p>Loading slots...</p>
+      <div className="space-y-6 relative h-full">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
+              <Layers className="text-accent" /> Ad Slot Management
+            </h1>
+            <p className="text-slate-400 mt-1">Manage your website's ad inventory and floor prices</p>
+          </div>
+          <button disabled className="bg-slate-700 text-slate-400 font-medium py-2 px-4 rounded-lg flex items-center gap-2">
+            <Plus className="w-4 h-4" /> New Slot
+          </button>
         </div>
+        <SkeletonTable />
       </div>
     );
   }
@@ -105,7 +114,14 @@ export default function PubSlots() {
                 <tr>
                   <td colSpan={5} className="px-6 py-12 text-center">
                     <Layers className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-                    <p className="text-slate-400">You haven't created any ad slots yet.</p>
+                    <h2 className="text-xl font-medium text-slate-200">No slots found</h2>
+                    <p className="text-slate-400 mt-2 mb-6">You haven't created any ad slots yet. Click below to add your first inventory space.</p>
+                    <button 
+                      onClick={() => setIsModalOpen(true)}
+                      className="bg-accent hover:bg-accent-hover text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center gap-2 mx-auto"
+                    >
+                      <Plus className="w-4 h-4" /> Create your first ad slot
+                    </button>
                   </td>
                 </tr>
               ) : (

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { dspService } from '../services/dspService';
 import { Server, Activity, BarChart2 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell } from 'recharts';
+import { SkeletonChart, SkeletonTable } from '../components/Skeleton';
 
 export default function AdminDSPs() {
   const [dsps, setDsps] = useState([]);
@@ -29,11 +30,18 @@ export default function AdminDSPs() {
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-slate-400">
-          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-          <p>Loading DSP performance data...</p>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
+            <Server className="text-accent" /> DSP Performance
+          </h1>
+          <p className="text-slate-400 mt-1">Monitor Demand-Side Platform health, win rates, and latency</p>
         </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <SkeletonChart />
+          <SkeletonChart />
+        </div>
+        <SkeletonTable />
       </div>
     );
   }
@@ -122,8 +130,10 @@ export default function AdminDSPs() {
             <tbody className="divide-y divide-slate-700/50">
               {dsps.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
-                    No DSPs found.
+                  <td colSpan={6} className="px-6 py-12 text-center">
+                    <Server className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                    <h2 className="text-xl font-medium text-slate-200">No DSPs found</h2>
+                    <p className="text-slate-400 mt-2">There are currently no Demand-Side Platforms connected to the exchange.</p>
                   </td>
                 </tr>
               ) : (

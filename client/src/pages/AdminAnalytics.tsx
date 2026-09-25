@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { analyticsService } from '../services/analyticsService';
 import { BarChart3, TrendingUp, Clock, Target } from 'lucide-react';
 import { AreaChart, Area, ComposedChart, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import { SkeletonChart } from '../components/Skeleton';
 
 export default function AdminAnalytics() {
   const [data, setData] = useState(null);
@@ -23,10 +24,17 @@ export default function AdminAnalytics() {
 
   if (isLoading || !data) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-slate-400">
-          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-          <p>Loading platform analytics...</p>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
+            <BarChart3 className="text-accent" /> Platform Analytics
+          </h1>
+          <p className="text-slate-400 mt-1">Platform-wide metrics for the last 24 hours</p>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="lg:col-span-2"><SkeletonChart /></div>
+          <SkeletonChart />
+          <SkeletonChart />
         </div>
       </div>
     );

@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { analyticsService } from '../services/analyticsService';
 import { BarChart3 } from 'lucide-react';
 import { AreaChart, Area, ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import { SkeletonChart } from '../components/Skeleton';
 
 export default function AdvAnalytics() {
   const { currentUser } = useAuth();
@@ -27,10 +28,16 @@ export default function AdvAnalytics() {
 
   if (isLoading || !data) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-slate-400">
-          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-          <p>Loading your analytics...</p>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
+            <BarChart3 className="text-accent" /> Analytics
+          </h1>
+          <p className="text-slate-400 mt-1">Performance metrics for your campaigns over the last 24 hours</p>
+        </div>
+        <div className="grid grid-cols-1 gap-6">
+          <SkeletonChart />
+          <SkeletonChart />
         </div>
       </div>
     );

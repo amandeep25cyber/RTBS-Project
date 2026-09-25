@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { userService } from '../services/userService';
 import { Users, Shield, ShieldOff, Mail, Briefcase, Globe, AlertCircle } from 'lucide-react';
+import { SkeletonTable } from '../components/Skeleton';
 
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
@@ -31,11 +32,14 @@ export default function AdminUsers() {
 
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3 text-slate-400">
-          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-          <p>Loading users...</p>
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
+            <Users className="text-accent" /> User Management
+          </h1>
+          <p className="text-slate-400 mt-1">Manage advertisers and publishers on the platform</p>
         </div>
+        <SkeletonTable rows={8} />
       </div>
     );
   }
@@ -70,8 +74,10 @@ export default function AdminUsers() {
             <tbody className="divide-y divide-slate-700/50">
               {users.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-slate-500">
-                    No users found.
+                  <td colSpan={5} className="px-6 py-12 text-center">
+                    <Users className="w-12 h-12 text-slate-600 mx-auto mb-3" />
+                    <h2 className="text-xl font-medium text-slate-200">No users found</h2>
+                    <p className="text-slate-400 mt-2">There are currently no registered users on the platform.</p>
                   </td>
                 </tr>
               ) : (
