@@ -1,16 +1,20 @@
 import { useState, useEffect, useRef } from 'react';
 import { auctionService } from '../services/auctionService';
 import { useSimulator } from '../context/SimulatorContext';
+import { useCountUp } from '../hooks/useCountUp';
 import { Activity, XCircle, DollarSign, Clock } from 'lucide-react';
 
 export default function AdminFeed() {
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [stats, setStats] = useState({ total: 0, noBids: 0, currentQps: 0 });
   const eventCounter = useRef(0);
-  const feedEndRef = useRef(null);
+  const feedEndRef = useRef<HTMLDivElement>(null);
   const { isRunning, qps } = useSimulator();
   const isRunningRef = useRef(isRunning);
   const qpsRef = useRef(qps);
+
+  const animatedQps = useCountUp(stats.currentQps);
+  const animatedNoBidRate = useCountUp(stats.total > 0 ? Math.round((stats.noBids / stats.total) * 100) : 0);
 
   useEffect(() => {
     isRunningRef.current = isRunning;
@@ -19,7 +23,7 @@ export default function AdminFeed() {
 
   useEffect(() => {
     let isActive = true;
-    let timerId;
+    let timerId: any;
     
     // QPS calculator
     const qpsInterval = setInterval(() => {
@@ -54,8 +58,6 @@ export default function AdminFeed() {
       }
 
       if (isActive) {
-        // Calculate interval based on target QPS. e.g. 10 QPS = 100ms
-        // Cap it at minimum 10ms
         const intervalMs = Math.max(10, Math.floor(1000 / qpsRef.current));
         timerId = setTimeout(fetchAuction, intervalMs);
       }
@@ -81,6 +83,10 @@ export default function AdminFeed() {
         <div>
           <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
             <Activity className="text-accent" /> Live Auction Feed
+            {isRunning && <span className="ml-2 flex h-3 w-3 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-status-red opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-status-red"></span>
+            </span>}
           </h1>
           <p className="text-slate-400 mt-1">Real-time incoming bid requests and auction resolutions</p>
         </div>
@@ -88,12 +94,12 @@ export default function AdminFeed() {
         <div className="flex gap-4">
           <div className="bg-base-panel border border-slate-700 px-6 py-3 rounded-lg text-center min-w-[120px]">
             <p className="text-sm text-slate-400 mb-1">Traffic (QPS)</p>
-            <p className="text-2xl font-bold text-accent mono-num">{stats.currentQps}</p>
+            <p className="text-2xl font-bold text-accent mono-num">{animatedQps}</p>
           </div>
           <div className="bg-base-panel border border-slate-700 px-6 py-3 rounded-lg text-center min-w-[120px]">
             <p className="text-sm text-slate-400 mb-1">No-Bid Rate</p>
             <p className="text-2xl font-bold text-status-amber mono-num">
-              {stats.total > 0 ? Math.round((stats.noBids / stats.total) * 100) : 0}%
+              {animatedNoBidRate}%
             </p>
           </div>
         </div>
@@ -118,7 +124,7 @@ export default function AdminFeed() {
             </div>
           ) : (
             events.map((event) => (
-              <div key={event.id} className="grid grid-cols-12 gap-4 px-4 py-2 hover:bg-slate-700/30 rounded font-mono text-sm items-center transition-colors">
+              <div key={event.id} className="animate-row-enter grid grid-cols-12 gap-4 px-4 py-2 hover:bg-slate-700/30 rounded font-mono text-sm items-center transition-colors">
                 <div className="col-span-3 text-slate-400 tabular-nums">
                   {new Date(event.timestamp).toISOString().split('T')[1].replace('Z', '')}
                 </div>

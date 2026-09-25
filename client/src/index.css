@@ -39,3 +39,23 @@ body {
 .mono-num {
   @apply font-mono tabular-nums tracking-tight;
 }
+
+@keyframes row-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+    background-color: var(--color-accent);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(0);
+    background-color: var(--color-accent);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.animate-row-enter {
+  animation: row-enter 1s ease-out forwards;
+}
