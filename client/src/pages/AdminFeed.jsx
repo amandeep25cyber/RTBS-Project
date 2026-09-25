@@ -1,0 +1,1 @@
+export default function AdminFeed() { return <div>AdminFeed Page</div>; }

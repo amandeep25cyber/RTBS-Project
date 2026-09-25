@@ -1,0 +1,1 @@
+export default function AdvDashboard() { return <div>AdvDashboard Page</div>; }

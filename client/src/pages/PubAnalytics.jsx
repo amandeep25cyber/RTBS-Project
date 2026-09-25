@@ -1,0 +1,1 @@
+export default function PubAnalytics() { return <div>PubAnalytics Page</div>; }

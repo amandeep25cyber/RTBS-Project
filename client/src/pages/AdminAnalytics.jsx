@@ -1,0 +1,1 @@
+export default function AdminAnalytics() { return <div>AdminAnalytics Page</div>; }

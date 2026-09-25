@@ -1,0 +1,1 @@
+export default function AdminSimulator() { return <div>AdminSimulator Page</div>; }

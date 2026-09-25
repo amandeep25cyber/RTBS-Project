@@ -1,0 +1,1 @@
+export default function AdvAnalytics() { return <div>AdvAnalytics Page</div>; }
