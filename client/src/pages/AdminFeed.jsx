@@ -1,53 +1,63 @@
 import { useState, useEffect, useRef } from 'react';
 import { auctionService } from '../services/auctionService';
+import { useSimulator } from '../context/SimulatorContext';
 import { Activity, XCircle, DollarSign, Clock } from 'lucide-react';
 
 export default function AdminFeed() {
   const [events, setEvents] = useState([]);
-  const [stats, setStats] = useState({ total: 0, noBids: 0, qps: 0 });
+  const [stats, setStats] = useState({ total: 0, noBids: 0, currentQps: 0 });
   const eventCounter = useRef(0);
   const feedEndRef = useRef(null);
+  const { isRunning, qps } = useSimulator();
+  const isRunningRef = useRef(isRunning);
+  const qpsRef = useRef(qps);
+
+  useEffect(() => {
+    isRunningRef.current = isRunning;
+    qpsRef.current = qps;
+  }, [isRunning, qps]);
 
   useEffect(() => {
     let isActive = true;
+    let timerId;
     
     // QPS calculator
     const qpsInterval = setInterval(() => {
-      setStats(prev => ({ ...prev, qps: eventCounter.current }));
+      setStats(prev => ({ ...prev, currentQps: eventCounter.current }));
       eventCounter.current = 0;
     }, 1000);
 
     const fetchAuction = async () => {
       if (!isActive) return;
       
-      try {
-        const event = await auctionService.getLatestAuction();
-        if (!isActive) return;
-        
-        eventCounter.current += 1;
-        
-        setEvents(prev => {
-          const next = [...prev, event];
-          // Keep only last 100 events for performance
-          if (next.length > 100) next.shift();
-          return next;
-        });
+      if (isRunningRef.current) {
+        try {
+          const event = await auctionService.getLatestAuction();
+          if (!isActive) return;
+          
+          eventCounter.current += 1;
+          
+          setEvents(prev => {
+            const next = [...prev, event];
+            if (next.length > 100) next.shift();
+            return next;
+          });
 
-        setStats(prev => ({
-          ...prev,
-          total: prev.total + 1,
-          noBids: prev.noBids + (event.isNoBid ? 1 : 0)
-        }));
-
-      } catch (err) {
-        console.error("Failed to fetch auction:", err);
+          setStats(prev => ({
+            ...prev,
+            total: prev.total + 1,
+            noBids: prev.noBids + (event.isNoBid ? 1 : 0)
+          }));
+        } catch (err) {
+          console.error("Failed to fetch auction:", err);
+        }
       }
 
-      // Schedule next fetch based on random interval to simulate real traffic (average 10-20 QPS -> 50-100ms)
-      // Actually, standard is 1-2s according to spec if we use a simple interval, but spec says "1-2s" interval in 6.2. 
-      // Let's use 1000ms. Later simulator control will change this.
       if (isActive) {
-        setTimeout(fetchAuction, 1000);
+        // Calculate interval based on target QPS. e.g. 10 QPS = 100ms
+        // Cap it at minimum 10ms
+        const intervalMs = Math.max(10, Math.floor(1000 / qpsRef.current));
+        timerId = setTimeout(fetchAuction, intervalMs);
       }
     };
 
@@ -55,6 +65,7 @@ export default function AdminFeed() {
 
     return () => {
       isActive = false;
+      clearTimeout(timerId);
       clearInterval(qpsInterval);
     };
   }, []);
@@ -77,7 +88,7 @@ export default function AdminFeed() {
         <div className="flex gap-4">
           <div className="bg-base-panel border border-slate-700 px-6 py-3 rounded-lg text-center min-w-[120px]">
             <p className="text-sm text-slate-400 mb-1">Traffic (QPS)</p>
-            <p className="text-2xl font-bold text-accent mono-num">{stats.qps}</p>
+            <p className="text-2xl font-bold text-accent mono-num">{stats.currentQps}</p>
           </div>
           <div className="bg-base-panel border border-slate-700 px-6 py-3 rounded-lg text-center min-w-[120px]">
             <p className="text-sm text-slate-400 mb-1">No-Bid Rate</p>
