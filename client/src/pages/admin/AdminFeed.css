@@ -1,0 +1,179 @@
+/* ─── Admin Live Feed ─────────────────────────────────────────── */
+
+.feed-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 0;
+  font-size: 0.875rem;
+}
+
+/* Header */
+.feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.feed-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Pulsing live indicator */
+.live-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--error-red);
+  box-shadow: 0 0 8px var(--error-red);
+  animation: live-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  0%, 100% { box-shadow: 0 0 4px var(--error-red); opacity: 1; }
+  50%       { box-shadow: 0 0 14px var(--error-red); opacity: 0.7; }
+}
+
+/* Stats row */
+.feed-stats {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 6px 12px;
+}
+
+.stat-chip.warn {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.05);
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+/* Control button */
+.feed-ctrl-btn {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--accent-live);
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.feed-ctrl-btn:hover {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+.feed-ctrl-btn.paused {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.3);
+  color: var(--success-green);
+}
+
+/* Column headers */
+.feed-cols {
+  display: grid;
+  grid-template-columns: 90px 110px 1fr 120px 90px 90px;
+  gap: 0;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px 8px 0 0;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+}
+
+/* Scrollable list */
+.feed-list {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  max-height: 520px;
+}
+
+.feed-empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Feed rows */
+.feed-row {
+  display: grid;
+  grid-template-columns: 90px 110px 1fr 120px 90px 90px;
+  gap: 0;
+  padding: 9px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s;
+  animation: row-slide-in 0.25s ease;
+}
+
+@keyframes row-slide-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.feed-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.row-win  { border-left: 2px solid rgba(59, 130, 246, 0.35); }
+.row-nobid { border-left: 2px solid rgba(239, 68, 68, 0.25); }
+
+.text-dim { color: var(--text-secondary); }
+
+/* Status badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.badge-win   { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+.badge-nobid { background: rgba(239, 68, 68, 0.12); color: #fca5a5; }
