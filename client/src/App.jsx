@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { SimulatorProvider } from './context/SimulatorContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 // Page stubs
@@ -58,9 +59,11 @@ const AppRoutes = () => {
 
 const App = () => (
   <AuthProvider>
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
+    <SimulatorProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </SimulatorProvider>
   </AuthProvider>
 );
 

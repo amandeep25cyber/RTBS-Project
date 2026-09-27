@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback, useContext, createContext } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { generateAuctionEvent } from '../../mocks/auctions';
+import { useSimulator } from '../../context/SimulatorContext';
 import './AdminFeed.css';
-
-/* ─── Simulator context (shared with SimulatorControl page) ─── */
-export const SimulatorContext = createContext({ rate: 1000, setRate: () => {} });
 
 const MAX_ROWS = 120;
 
@@ -11,7 +9,7 @@ const fmtBid  = (paise) => paise != null ? `₹${(paise / 100).toFixed(2)}` : '�
 const fmtTime = (iso)   => new Date(iso).toLocaleTimeString('en-IN', { hour12: false });
 
 export const AdminFeed = () => {
-  const { rate } = useContext(SimulatorContext);
+  const { rate, running } = useSimulator();
 
   const [events, setEvents] = useState([]);
   const [paused, setPaused] = useState(false);
@@ -25,6 +23,7 @@ export const AdminFeed = () => {
   // Attach / detach the event generator
   const startInterval = useCallback(() => {
     clearInterval(intervalRef.current);
+    if (!running) return;
     intervalRef.current = setInterval(() => {
       if (paused) return;
       const ev = generateAuctionEvent();
@@ -33,7 +32,7 @@ export const AdminFeed = () => {
       setTotalCount(c => c + 1);
       if (ev.isNoBid) setNoBidCount(c => c + 1);
     }, rate);
-  }, [rate, paused]);
+  }, [rate, paused, running]);
 
   useEffect(() => {
     startInterval();
