@@ -1,0 +1,95 @@
+.shell-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-slate);
+}
+
+.shell-sidebar {
+  width: 260px;
+  background-color: var(--bg-panel);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.shell-brand {
+  padding: 24px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.shell-nav {
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-link {
+  padding: 12px 24px;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  border-left: 3px solid transparent;
+}
+
+.nav-link:hover {
+  color: var(--text-primary);
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.nav-link.active {
+  color: var(--text-primary);
+  background-color: rgba(59, 130, 246, 0.1);
+  border-left-color: var(--accent-live);
+}
+
+.shell-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.shell-header {
+  height: 64px;
+  background-color: var(--bg-panel);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-name {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.btn-logout {
+  background: transparent;
+  border: 1px solid var(--text-secondary);
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-logout:hover {
+  color: var(--text-primary);
+  border-color: var(--text-primary);
+}
+
+.shell-content {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+}
