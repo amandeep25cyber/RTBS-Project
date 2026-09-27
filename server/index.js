@@ -34,7 +34,7 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://mongo:27017/rtb')
 
 // Health Route
 app.get('/health', (req, res) => {
-  res.status(200).send('OK');
+  res.status(200).json({ status: 'OK' });
 });
 
 app.listen(port, () => {
