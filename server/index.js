@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const Redis = require('ioredis');
 const cookieParser = require('cookie-parser');
 
-const authRoutes = require('./routes/auth');
+const authRoutes     = require('./routes/auth');
+const campaignRoutes = require('./routes/campaigns');
+const slotRoutes     = require('./routes/slots');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -45,7 +47,9 @@ mongoose
 
 // ── Routes ────────────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => res.status(200).json({ status: 'OK' }));
-app.use('/auth', authRoutes);
+app.use('/auth',      authRoutes);
+app.use('/campaigns', campaignRoutes);
+app.use('/slots',     slotRoutes);
 
 // ── Global error handler ──────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
