@@ -57,4 +57,24 @@ budgetResetQueue.add(
   }
 ).catch((err) => console.error('Worker: failed to schedule budgetResetJob:', err));
 
+const { processHourlyRollup } = require('./jobs/hourlyRollupJob');
+const hourlyRollupWorker = new Worker(
+  'hourlyRollup',
+  processHourlyRollup,
+  { connection: redisConnection, concurrency: 1 }
+);
+hourlyRollupWorker.on('completed', (job) => console.log(`hourlyRollupJob ${job.id} completed`));
+hourlyRollupWorker.on('failed', (job, err) => console.error(`hourlyRollupJob ${job?.id} failed:`, err.message));
+
+const hourlyRollupQueue = new Queue('hourlyRollup', { connection: redisConnection });
+hourlyRollupQueue.add(
+  'rollupLogs',
+  {},
+  {
+    repeat: { cron: '0 * * * *' }, // top of every hour
+    attempts: 3,
+    backoff: { type: 'exponential', delay: 5000 },
+  }
+).catch((err) => console.error('Worker: failed to schedule hourlyRollupJob:', err));
+
 console.log('Worker is running and waiting for jobs...');
