@@ -7,6 +7,9 @@ const cookieParser = require('cookie-parser');
 const authRoutes     = require('./routes/auth');
 const campaignRoutes = require('./routes/campaigns');
 const slotRoutes     = require('./routes/slots');
+const walletRoutes   = require('./routes/wallet');
+const earningsRoutes = require('./routes/earnings');
+const adminRoutes    = require('./routes/admin');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -50,6 +53,9 @@ app.get('/health', (req, res) => res.status(200).json({ status: 'OK' }));
 app.use('/auth',      authRoutes);
 app.use('/campaigns', campaignRoutes);
 app.use('/slots',     slotRoutes);
+app.use('/wallet',    walletRoutes);
+app.use('/earnings',  earningsRoutes);
+app.use('/admin',     adminRoutes);
 
 // ── Global error handler ──────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
