@@ -12,7 +12,7 @@ const transactionSchema = new mongoose.Schema(
     amount: { type: Number, required: true },      // integer paise
     balanceAfter: { type: Number, required: true }, // integer paise — snapshot after this tx
     // Only for deposits — unique sparse index makes webhook handling idempotent (§8.2)
-    gatewayTransactionId: { type: String, default: null },
+    gatewayTransactionId: { type: String },
     status: { type: String, enum: ['pending', 'completed', 'failed'], default: 'pending' },
   },
   { timestamps: { createdAt: 'createdAt', updatedAt: false } }
