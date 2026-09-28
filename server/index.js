@@ -58,4 +58,10 @@ app.use((err, req, res, next) => {
 });
 
 // ── Start ─────────────────────────────────────────────────────────────────────
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+const http = require('http');
+const socketService = require('./services/socketService');
+
+const server = http.createServer(app);
+socketService.init(server);
+
+server.listen(port, () => console.log(`Server is running on port ${port}`));
