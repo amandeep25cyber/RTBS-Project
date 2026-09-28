@@ -1,28 +1,60 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
-const Redis = require('ioredis');
+const { Worker, QueueScheduler, Queue } = require('bullmq');
 
-// Redis Connection
-const redis = new Redis({
+const { processTargetingIndex } = require('./jobs/targetingIndexJob');
+const { processBudgetReset }    = require('./jobs/budgetResetJob');
+
+const redisConnection = {
   host: process.env.REDIS_HOST || 'redis',
-  port: process.env.REDIS_PORT || 6379,
-});
+  port: parseInt(process.env.REDIS_PORT || '6379', 10),
+  maxRetriesPerRequest: null,
+};
 
-redis.on('connect', () => {
-  console.log('Worker: Successfully connected to Redis');
-});
+// ── MongoDB connection ─────────────────────────────────────────────────────────
+mongoose
+  .connect(process.env.MONGO_URI || 'mongodb://mongo:27017/rtb')
+  .then(() => console.log('Worker: Successfully connected to MongoDB'))
+  .catch((err) => console.error('Worker: MongoDB connection error:', err));
 
-redis.on('error', (err) => {
-  console.error('Worker: Redis connection error:', err);
-});
+// ── BullMQ Workers ─────────────────────────────────────────────────────────────
+const targetingIndexWorker = new Worker(
+  'targetingIndex',
+  processTargetingIndex,
+  { connection: redisConnection, concurrency: 5 }
+);
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGO_URI || 'mongodb://mongo:27017/rtb')
-  .then(() => {
-    console.log('Worker: Successfully connected to MongoDB');
-  })
-  .catch((err) => {
-    console.error('Worker: MongoDB connection error:', err);
-  });
+const budgetResetWorker = new Worker(
+  'budgetReset',
+  processBudgetReset,
+  { connection: redisConnection, concurrency: 1 }
+);
+
+targetingIndexWorker.on('completed', (job) =>
+  console.log(`targetingIndexJob ${job.id} completed`)
+);
+targetingIndexWorker.on('failed', (job, err) =>
+  console.error(`targetingIndexJob ${job?.id} failed:`, err.message)
+);
+
+budgetResetWorker.on('completed', (job) =>
+  console.log(`budgetResetJob ${job.id} completed`)
+);
+budgetResetWorker.on('failed', (job, err) =>
+  console.error(`budgetResetJob ${job?.id} failed:`, err.message)
+);
+
+// ── Scheduled cron: budget reset at midnight every day ────────────────────────
+const budgetResetQueue = new Queue('budgetReset', { connection: redisConnection });
+
+budgetResetQueue.add(
+  'resetAllBudgets',
+  {},
+  {
+    repeat: { cron: '0 0 * * *' }, // nightly at 00:00
+    attempts: 3,
+    backoff: { type: 'exponential', delay: 5000 },
+  }
+).catch((err) => console.error('Worker: failed to schedule budgetResetJob:', err));
 
 console.log('Worker is running and waiting for jobs...');
