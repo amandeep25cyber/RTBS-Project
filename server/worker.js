@@ -77,4 +77,44 @@ hourlyRollupQueue.add(
   }
 ).catch((err) => console.error('Worker: failed to schedule hourlyRollupJob:', err));
 
+const { processPayout } = require('./jobs/payoutJob');
+const payoutWorker = new Worker(
+  'payout',
+  processPayout,
+  { connection: redisConnection, concurrency: 1 }
+);
+payoutWorker.on('completed', (job) => console.log(`payoutJob ${job.id} completed`));
+payoutWorker.on('failed', (job, err) => console.error(`payoutJob ${job?.id} failed:`, err.message));
+
+const payoutQueue = new Queue('payout', { connection: redisConnection });
+payoutQueue.add(
+  'weeklyPayout',
+  {},
+  {
+    repeat: { cron: '0 0 * * 0' }, // Weekly on Sunday
+    attempts: 3,
+    backoff: { type: 'exponential', delay: 5000 },
+  }
+).catch((err) => console.error('Worker: failed to schedule payoutJob:', err));
+
+const { processFraudScan } = require('./jobs/fraudScanJob');
+const fraudScanWorker = new Worker(
+  'fraudScan',
+  processFraudScan,
+  { connection: redisConnection, concurrency: 1 }
+);
+fraudScanWorker.on('completed', (job) => console.log(`fraudScanJob ${job.id} completed`));
+fraudScanWorker.on('failed', (job, err) => console.error(`fraudScanJob ${job?.id} failed:`, err.message));
+
+const fraudScanQueue = new Queue('fraudScan', { connection: redisConnection });
+fraudScanQueue.add(
+  'scanFraud',
+  {},
+  {
+    repeat: { cron: '*/15 * * * *' }, // Every 15 minutes
+    attempts: 3,
+    backoff: { type: 'exponential', delay: 5000 },
+  }
+).catch((err) => console.error('Worker: failed to schedule fraudScanJob:', err));
+
 console.log('Worker is running and waiting for jobs...');
