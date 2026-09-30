@@ -1,27 +1,37 @@
-import { users } from '../mocks/users';
-import { transactions } from '../mocks/transactions';
-import { delay } from './delay';
-
-// Mock payout history for publishers
-const payouts = [
-  { id: 'p1', userId: 'u3', amount: 80000, status: 'completed', createdAt: '2024-01-08T09:00:00Z' },
-];
+/**
+ * earningsService.js — real backend calls.
+ * All routes require the publisher's httpOnly cookie.
+ */
+const BASE = '/api';
 
 export const earningsService = {
-  getBalance: async (userId) => {
-    await delay();
-    const user = users.find(u => u.id === userId);
-    return user ? (user.earningsBalance || 0) : 0;
+  /** GET /earnings/balance */
+  getBalance: async () => {
+    const res = await fetch(`${BASE}/earnings/balance`, {
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error('Failed to fetch balance');
+    const data = await res.json();
+    return data.balance || 0;
   },
 
-  getTransactions: async (userId) => {
-    await delay();
-    // Return publisher earning type transactions for this user
-    return transactions.filter(t => t.userId === userId && t.type === 'publisher_earning');
+  /** GET /earnings/transactions */
+  getTransactions: async (page = 1, limit = 20) => {
+    const res = await fetch(`${BASE}/earnings/transactions?page=${page}&limit=${limit}`, {
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error('Failed to fetch transactions');
+    const data = await res.json();
+    return data.transactions;
   },
 
-  getPayouts: async (userId) => {
-    await delay();
-    return payouts.filter(p => p.userId === userId);
+  /** GET /earnings/payouts */
+  getPayouts: async (page = 1, limit = 20) => {
+    const res = await fetch(`${BASE}/earnings/payouts?page=${page}&limit=${limit}`, {
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error('Failed to fetch payouts');
+    const data = await res.json();
+    return data.payouts;
   },
 };
