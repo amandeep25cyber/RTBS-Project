@@ -7,34 +7,31 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // On mount: verify cookie with the server instead of trusting localStorage.
   useEffect(() => {
-    // Check local storage for mocked session
-    const storedUser = localStorage.getItem('rtb_mock_user');
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch(e) {}
-    }
-    setLoading(false);
+    authService.me()
+      .then((userData) => {
+        if (userData) setUser(userData);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   const login = async (email, password) => {
     const userData = await authService.login(email, password);
     setUser(userData);
-    localStorage.setItem('rtb_mock_user', JSON.stringify(userData));
     return userData;
   };
 
   const signup = async (userData) => {
     const newUser = await authService.signup(userData);
     setUser(newUser);
-    localStorage.setItem('rtb_mock_user', JSON.stringify(newUser));
     return newUser;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await authService.logout();
     setUser(null);
-    localStorage.removeItem('rtb_mock_user');
   };
 
   return (
