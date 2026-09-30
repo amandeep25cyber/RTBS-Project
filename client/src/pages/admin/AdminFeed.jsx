@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
-import { generateAuctionEvent } from '../../mocks/auctions';
-import { useSimulator } from '../../context/SimulatorContext';
+import { useSocket } from '../../context/SocketContext';
 import './AdminFeed.css';
 
 const MAX_ROWS = 120;
@@ -9,7 +8,7 @@ const fmtBid  = (paise) => paise != null ? `₹${(paise / 100).toFixed(2)}` : '�
 const fmtTime = (iso)   => new Date(iso).toLocaleTimeString('en-IN', { hour12: false });
 
 export const AdminFeed = () => {
-  const { rate, running } = useSimulator();
+  const { socket, connected } = useSocket();
 
   const [events, setEvents] = useState([]);
   const [paused, setPaused] = useState(false);
@@ -18,26 +17,34 @@ export const AdminFeed = () => {
   const [totalCount, setTotalCount] = useState(0);
   const tickRef = useRef(0);
   const listRef = useRef(null);
-  const intervalRef = useRef(null);
-
-  // Attach / detach the event generator
-  const startInterval = useCallback(() => {
-    clearInterval(intervalRef.current);
-    if (!running) return;
-    intervalRef.current = setInterval(() => {
-      if (paused) return;
-      const ev = generateAuctionEvent();
-      tickRef.current += 1;
-      setEvents(prev => [ev, ...prev].slice(0, MAX_ROWS));
-      setTotalCount(c => c + 1);
-      if (ev.isNoBid) setNoBidCount(c => c + 1);
-    }, rate);
-  }, [rate, paused, running]);
 
   useEffect(() => {
-    startInterval();
-    return () => clearInterval(intervalRef.current);
-  }, [startInterval]);
+    if (!socket) return;
+
+    const handleAuctionCompleted = (ev) => {
+      if (paused) return;
+      
+      const newEv = {
+        id: ev.slotId, // or auction id if available
+        isNoBid: ev.noBid,
+        winnerId: ev.winningCampaignId,
+        winningBid: ev.winningBid,
+        latencyMs: ev.latencyMs,
+        timestamp: ev.timestamp
+      };
+
+      tickRef.current += 1;
+      setEvents(prev => [newEv, ...prev].slice(0, MAX_ROWS));
+      setTotalCount(c => c + 1);
+      if (newEv.isNoBid) setNoBidCount(c => c + 1);
+    };
+
+    socket.on('auction:completed', handleAuctionCompleted);
+
+    return () => {
+      socket.off('auction:completed', handleAuctionCompleted);
+    };
+  }, [socket, paused]);
 
   // Auctions-per-second counter (reset every second)
   useEffect(() => {
@@ -62,8 +69,8 @@ export const AdminFeed = () => {
       {/* Header bar */}
       <div className="feed-header">
         <div className="feed-title">
-          <span className="live-dot" aria-label="Live" />
-          Live Auction Feed
+          <span className={`live-dot ${connected ? '' : 'offline'}`} aria-label="Live" />
+          Live Auction Feed {connected ? '' : '(Disconnected)'}
         </div>
         <div className="feed-stats">
           <div className="stat-chip">
@@ -107,8 +114,8 @@ export const AdminFeed = () => {
         {events.length === 0 && (
           <div className="feed-empty">Waiting for events…</div>
         )}
-        {events.map(ev => (
-          <div key={ev.id} className={`feed-row ${ev.isNoBid ? 'row-nobid' : 'row-win'}`}>
+        {events.map((ev, i) => (
+          <div key={`${ev.id}-${i}`} className={`feed-row ${ev.isNoBid ? 'row-nobid' : 'row-win'}`}>
             <span className="mono text-dim">{fmtTime(ev.timestamp)}</span>
             <span className="mono text-dim">{ev.id}</span>
             <span>{ev.isNoBid ? '—' : ev.winnerId}</span>
