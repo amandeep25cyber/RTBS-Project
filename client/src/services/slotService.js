@@ -1,22 +1,46 @@
-import { slots } from '../mocks/slots';
-import { delay } from './delay';
+/**
+ * slotService.js — real backend calls.
+ * All routes require the publisher's httpOnly cookie.
+ */
+const BASE = '/api';
 
 export const slotService = {
-  getByPublisher: async (publisherId) => {
-    await delay();
-    return slots.filter(s => s.publisherId === publisherId);
+  /** GET /slots — own slots only */
+  getByPublisher: async () => {
+    const res = await fetch(`${BASE}/slots`, {
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error('Failed to fetch slots');
+    return res.json(); // array of slots
   },
+
+  /** POST /slots */
   create: async (slotData) => {
-    await delay();
-    const newSlot = { id: `s${Date.now()}`, ...slotData, fillRate: 0, revenueToday: 0, status: 'active' };
-    slots.push(newSlot);
-    return newSlot;
+    const res = await fetch(`${BASE}/slots`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(slotData),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to create slot');
+    }
+    return res.json();
   },
+
+  /** PUT /slots/:id */
   update: async (id, data) => {
-    await delay();
-    const index = slots.findIndex(s => s.id === id);
-    if (index === -1) throw new Error("Not found");
-    slots[index] = { ...slots[index], ...data };
-    return slots[index];
-  }
+    const res = await fetch(`${BASE}/slots/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to update slot');
+    }
+    return res.json();
+  },
 };
