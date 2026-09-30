@@ -10,6 +10,7 @@ const slotRoutes     = require('./routes/slots');
 const walletRoutes   = require('./routes/wallet');
 const earningsRoutes = require('./routes/earnings');
 const adminRoutes    = require('./routes/admin');
+const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -56,6 +57,7 @@ app.use('/slots',     slotRoutes);
 app.use('/wallet',    walletRoutes);
 app.use('/earnings',  earningsRoutes);
 app.use('/admin',     adminRoutes);
+app.use('/analytics', analyticsRoutes);
 
 // ── Global error handler ──────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
